@@ -1,0 +1,1 @@
+/root/.claude/commands/wp-setup.md

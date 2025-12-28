@@ -1,0 +1,133 @@
+{
+  "name": "wordpress-dev-skills",
+  "version": "1.3.0",
+  "description": "Complete WordPress development and automation toolkit for Claude Code - includes Docker/Playground environments, white-labeling with FREE plugins, SEO optimization, visual QA, performance optimization, and slash commands for rapid site setup.",
+  "author": "Hustle Server",
+  "license": "MIT",
+  "homepage": "https://github.com/hustleserver/wordpress-dev-skills",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hustleserver/wordpress-dev-skills.git"
+  },
+  "skills": [
+    {
+      "name": "wordpress-dev",
+      "path": "skills/wordpress-dev",
+      "description": "WordPress development best practices, coding standards, CPT creation, security, performance, hooks/filters"
+    },
+    {
+      "name": "wordpress-admin",
+      "path": "skills/wordpress-admin",
+      "description": "WordPress page/post management, WP-CLI commands, REST API usage"
+    },
+    {
+      "name": "seo-optimizer",
+      "path": "skills/seo-optimizer",
+      "description": "SEO audit and optimization for Yoast/Rank Math - focus keywords, meta descriptions, featured images"
+    },
+    {
+      "name": "visual-qa",
+      "path": "skills/visual-qa",
+      "description": "Screenshot automation with GSAP animation handling, multi-device testing"
+    },
+    {
+      "name": "brand-guide",
+      "path": "skills/brand-guide",
+      "description": "Brand documentation generation - colors, fonts, imagery, voice/tone"
+    },
+    {
+      "name": "white-label",
+      "path": "skills/white-label",
+      "description": "Complete WordPress white-labeling using FREE plugins only - ASE, Branda, Admin Menu Editor for login branding, admin cleanup, security"
+    },
+    {
+      "name": "wp-docker",
+      "path": "skills/wp-docker",
+      "description": "Docker Compose WordPress environment with MariaDB, WP-CLI, and automated setup scripts"
+    },
+    {
+      "name": "wp-playground",
+      "path": "skills/wp-playground",
+      "description": "WordPress Playground blueprints for instant testing environments with pre-configured plugins"
+    },
+    {
+      "name": "gsap-animations",
+      "path": "skills/gsap-animations",
+      "description": "GSAP animation best practices, accessibility (prefers-reduced-motion), responsive animations, visual QA integration"
+    },
+    {
+      "name": "wp-performance",
+      "path": "skills/wp-performance",
+      "description": "Core Web Vitals optimization, image/video compression, caching configuration, speed testing automation"
+    },
+    {
+      "name": "wp-orchestrator",
+      "path": "skills/wp-orchestrator",
+      "description": "Master WordPress project orchestrator - coordinates all skills, interview phases, audit workflows, todo list management"
+    }
+  ],
+  "dependencies": {
+    "python": ">=3.9",
+    "playwright": ">=1.40.0"
+  },
+  "optional_dependencies": {
+    "curl": "For API requests",
+    "docker": "For local WordPress database access"
+  },
+  "commands": [
+    {
+      "name": "wp-setup",
+      "path": "commands/wp-setup.md",
+      "description": "Set up a new WordPress site with Docker, install plugins, configure white-labeling"
+    },
+    {
+      "name": "wp-audit",
+      "path": "commands/wp-audit.md",
+      "description": "Comprehensive WordPress site audit - SEO, performance, security, visual QA"
+    },
+    {
+      "name": "wp-launch",
+      "path": "commands/wp-launch.md",
+      "description": "Pre-launch checklist and final deployment preparation"
+    }
+  ],
+  "mcp_servers": [],
+  "keywords": [
+    "wordpress",
+    "development",
+    "docker",
+    "playground",
+    "seo",
+    "visual-testing",
+    "brand-guide",
+    "white-label",
+    "gsap",
+    "performance",
+    "orchestrator",
+    "automation",
+    "claude-code"
+  ],
+  "installation": {
+    "methods": [
+      {
+        "name": "git-clone",
+        "description": "Clone directly into skills directory",
+        "command": "git clone https://github.com/hustleserver/wordpress-dev-skills.git ~/.claude/skills/wordpress-dev-skills"
+      },
+      {
+        "name": "install-script",
+        "description": "Run install script",
+        "command": "curl -sL https://raw.githubusercontent.com/hustleserver/wordpress-dev-skills/main/install.sh | bash"
+      },
+      {
+        "name": "manual",
+        "description": "Download and copy",
+        "steps": [
+          "Download the latest release from GitHub",
+          "Extract to ~/.claude/skills/",
+          "Symlink individual skills or use as-is"
+        ]
+      }
+    ]
+  }
+}

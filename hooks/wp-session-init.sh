@@ -1,0 +1,1 @@
+/root/.claude/hooks/wp-session-init.sh
