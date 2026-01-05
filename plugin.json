@@ -1,6 +1,6 @@
 {
   "name": "wordpress-dev-skills",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Complete WordPress development and automation toolkit for Claude Code - includes Docker/Playground environments, white-labeling with FREE plugins, SEO optimization, visual QA, performance optimization, and slash commands for rapid site setup.",
   "author": "Hustle Server",
   "license": "MIT",
@@ -64,6 +64,11 @@
       "name": "wp-orchestrator",
       "path": "skills/wp-orchestrator",
       "description": "Master WordPress project orchestrator - coordinates all skills, interview phases, audit workflows, todo list management"
+    },
+    {
+      "name": "siteground-cache",
+      "path": "skills/siteground-cache",
+      "description": "SiteGround cache buster for development - bypasses LiteSpeed Cache, SG CachePress, adds no-cache headers, busts browser cache for theme assets"
     }
   ],
   "dependencies": {
@@ -105,7 +110,9 @@
     "performance",
     "orchestrator",
     "automation",
-    "claude-code"
+    "claude-code",
+    "siteground",
+    "cache-buster"
   ],
   "installation": {
     "methods": [
