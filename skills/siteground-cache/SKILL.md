@@ -2,6 +2,43 @@
 
 Bypass SiteGround caching (SG CachePress + LiteSpeed) for WordPress development. Adds cache-busting code to child themes for real-time development testing.
 
+---
+
+## IMPORTANT: Staging First Workflow
+
+**ALWAYS deploy to staging before production!**
+
+```
+Local Development → Staging Site → Production Site
+                    ↑
+                    Test here first!
+```
+
+SiteGround provides free staging environments. Use them!
+
+---
+
+## Required Information
+
+Before using this skill, Claude will ask for:
+
+1. **FTP/SFTP Credentials**
+   - Hostname (e.g., `ftp.example.com`)
+   - Username
+   - Password
+   - Port (usually 21 for FTP, 22 for SFTP)
+
+2. **Site URLs**
+   - Staging URL (e.g., `https://staging.example.com`)
+   - Production URL (e.g., `https://example.com`)
+
+3. **Theme Path**
+   - Child theme folder name (e.g., `theme-child`)
+
+**Store credentials in project's `CLAUDE.local.md`** (gitignored) for future sessions.
+
+---
+
 ## Quick Start
 
 ```bash
@@ -204,6 +241,81 @@ if (defined('WP_DEV_MODE') && WP_DEV_MODE) {
 ├── add-cache-buster.sh      # Auto-inject script
 ├── cache-buster.php         # Standalone PHP snippet
 └── remove-cache-buster.sh   # Removal script
+```
+
+---
+
+## Deployment Workflow
+
+### Step 1: Get Credentials (Ask User)
+
+Before deploying, ask the user:
+```
+I need FTP credentials to deploy to SiteGround. Please provide:
+1. FTP Host (e.g., ftp.yourdomain.com)
+2. FTP Username
+3. FTP Password
+4. Staging site path (e.g., staging.yourdomain.com/public_html)
+5. Production site path (e.g., yourdomain.com/public_html)
+```
+
+### Step 2: Deploy to Staging FIRST
+
+```bash
+# Always test on staging first!
+lftp -u "user,password" -e "
+    set ssl:verify-certificate no
+    mirror -R ./child-theme staging.example.com/public_html/wp-content/themes/child-theme
+    bye
+" ftp://ftp.example.com
+```
+
+### Step 3: Verify on Staging
+
+1. Visit staging site as admin
+2. Confirm dev banner appears (bottom-right)
+3. Test CSS/JS changes are visible
+4. Check for PHP errors
+
+### Step 4: Deploy to Production (After Testing)
+
+```bash
+# Only after staging is verified!
+lftp -u "user,password" -e "
+    set ssl:verify-certificate no
+    mirror -R ./child-theme example.com/public_html/wp-content/themes/child-theme
+    bye
+" ftp://ftp.example.com
+```
+
+### Step 5: Clear Production Cache
+
+1. Log into WordPress admin
+2. Click "Purge SG Cache" in admin bar
+3. Or: SiteGround Site Tools > Speed > Caching > Flush
+
+---
+
+## Example CLAUDE.local.md Template
+
+Store this in your project (gitignored):
+
+```markdown
+# SiteGround Credentials (DO NOT COMMIT)
+
+## FTP Access
+- Host: ftp.example.com
+- User: user@example.com
+- Pass: your-password
+- Port: 21
+
+## Site URLs
+- Staging: https://staging.example.com
+- Production: https://example.com
+
+## Theme Paths
+- Staging: staging.example.com/public_html/wp-content/themes/theme-child
+- Production: example.com/public_html/wp-content/themes/theme-child
 ```
 
 ---
