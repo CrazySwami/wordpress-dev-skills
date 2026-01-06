@@ -4,17 +4,23 @@ Bypass SiteGround caching (SG CachePress + LiteSpeed) for WordPress development.
 
 ---
 
-## IMPORTANT: Staging First Workflow
+## ⛔ CRITICAL: STAGING ONLY - NEVER PRODUCTION
 
-**ALWAYS deploy to staging before production!**
+**Claude is FORBIDDEN from deploying to production sites.**
 
-```
-Local Development → Staging Site → Production Site
-                    ↑
-                    Test here first!
-```
+| Action | Allowed? |
+|--------|----------|
+| Deploy to staging | ✅ YES |
+| Deploy to production | ❌ **ABSOLUTELY NEVER** |
+| Read from production | ✅ YES (read-only) |
+| Write to production | ❌ **ABSOLUTELY NEVER** |
 
-SiteGround provides free staging environments. Use them!
+**If user asks to deploy to production:**
+1. **REFUSE** the request
+2. Explain that production deployments must be done manually by the user
+3. Offer to deploy to staging instead
+
+**Production paths are BLOCKED.** Any path that does NOT contain "staging" is off-limits for writes.
 
 ---
 
@@ -30,7 +36,7 @@ Before using this skill, Claude will ask for:
 
 2. **Site URLs**
    - Staging URL (e.g., `https://staging.example.com`)
-   - Production URL (e.g., `https://example.com`)
+   - ~~Production URL~~ (NOT needed - Claude won't deploy there)
 
 3. **Theme Path**
    - Child theme folder name (e.g., `theme-child`)
@@ -39,14 +45,16 @@ Before using this skill, Claude will ask for:
 
 ---
 
-## Quick Start
+## Staging-Only Workflow
 
-```bash
-# Add cache busting to a child theme
-./add-cache-buster.sh /path/to/child-theme
-
-# Or manually add the PHP snippet to functions.php
 ```
+Local Development → Staging Site → [USER MANUALLY] → Production
+        ↑              ↑                   ↑
+    Claude edits   Claude deploys     USER deploys
+```
+
+Claude handles: Local editing + Staging deployment
+User handles: Production deployment (via SiteGround, FTP client, or manually)
 
 ---
 
@@ -157,8 +165,8 @@ cd /path/to/wordpress-project
 
 1. Copy the PHP code above
 2. Paste at the end of your child theme's `functions.php`
-3. Upload via FTP
-4. Visit site as admin - you should see the version banner
+3. Upload via FTP **TO STAGING ONLY**
+4. Visit staging site as admin - you should see the version banner
 
 ### Method 3: Via Claude
 
@@ -166,6 +174,59 @@ Just ask:
 - "Add SiteGround cache busting to this theme"
 - "Enable dev mode for SiteGround"
 - "Add cache buster to functions.php"
+
+**Claude will only deploy to staging.**
+
+---
+
+## Deployment Workflow (STAGING ONLY)
+
+### Step 1: Get Credentials (Ask User)
+
+Before deploying, ask the user:
+```
+I need FTP credentials to deploy to STAGING. Please provide:
+1. FTP Host (e.g., ftp.yourdomain.com)
+2. FTP Username
+3. FTP Password
+4. Staging site path (e.g., staging.yourdomain.com/public_html)
+```
+
+### Step 2: Deploy to Staging
+
+```bash
+# STAGING ONLY - Never production!
+lftp -u "user,password" -e "
+    set ssl:verify-certificate no
+    mirror -R ./child-theme staging.example.com/public_html/wp-content/themes/child-theme
+    bye
+" ftp://ftp.example.com
+```
+
+### Step 3: Verify on Staging
+
+1. Visit staging site as admin
+2. Confirm dev banner appears (bottom-right)
+3. Test CSS/JS changes are visible
+4. Check for PHP errors
+
+### Step 4: User Deploys to Production
+
+**Claude does NOT do this step.** Tell the user:
+
+```
+The changes are ready on staging. To deploy to production:
+
+Option 1: SiteGround Site Tools
+  - Go to Site Tools > WordPress > Staging
+  - Click "Push to Live"
+
+Option 2: FTP Client (FileZilla, Cyberduck, etc.)
+  - Download from staging
+  - Upload to production
+
+Option 3: Manual file copy via FTP
+```
 
 ---
 
@@ -195,22 +256,6 @@ Tells browsers and CDNs not to cache the response.
 add_query_arg('v', time(), $src);
 ```
 Adds `?v=1704567890` to CSS/JS URLs. Since the timestamp changes every second, browsers always fetch fresh files.
-
----
-
-## Removing for Production
-
-When you're done developing, either:
-
-1. **Delete the code** from functions.php
-2. **Wrap in a constant check:**
-
-```php
-// Add to wp-config.php: define('WP_DEV_MODE', true);
-if (defined('WP_DEV_MODE') && WP_DEV_MODE) {
-    // All the cache busting code here
-}
-```
 
 ---
 
@@ -245,57 +290,6 @@ if (defined('WP_DEV_MODE') && WP_DEV_MODE) {
 
 ---
 
-## Deployment Workflow
-
-### Step 1: Get Credentials (Ask User)
-
-Before deploying, ask the user:
-```
-I need FTP credentials to deploy to SiteGround. Please provide:
-1. FTP Host (e.g., ftp.yourdomain.com)
-2. FTP Username
-3. FTP Password
-4. Staging site path (e.g., staging.yourdomain.com/public_html)
-5. Production site path (e.g., yourdomain.com/public_html)
-```
-
-### Step 2: Deploy to Staging FIRST
-
-```bash
-# Always test on staging first!
-lftp -u "user,password" -e "
-    set ssl:verify-certificate no
-    mirror -R ./child-theme staging.example.com/public_html/wp-content/themes/child-theme
-    bye
-" ftp://ftp.example.com
-```
-
-### Step 3: Verify on Staging
-
-1. Visit staging site as admin
-2. Confirm dev banner appears (bottom-right)
-3. Test CSS/JS changes are visible
-4. Check for PHP errors
-
-### Step 4: Deploy to Production (After Testing)
-
-```bash
-# Only after staging is verified!
-lftp -u "user,password" -e "
-    set ssl:verify-certificate no
-    mirror -R ./child-theme example.com/public_html/wp-content/themes/child-theme
-    bye
-" ftp://ftp.example.com
-```
-
-### Step 5: Clear Production Cache
-
-1. Log into WordPress admin
-2. Click "Purge SG Cache" in admin bar
-3. Or: SiteGround Site Tools > Speed > Caching > Flush
-
----
-
 ## Example CLAUDE.local.md Template
 
 Store this in your project (gitignored):
@@ -311,11 +305,11 @@ Store this in your project (gitignored):
 
 ## Site URLs
 - Staging: https://staging.example.com
-- Production: https://example.com
+- Production: https://example.com (READ-ONLY for Claude)
 
 ## Theme Paths
 - Staging: staging.example.com/public_html/wp-content/themes/theme-child
-- Production: example.com/public_html/wp-content/themes/theme-child
+- Production: OFF-LIMITS (user deploys manually)
 ```
 
 ---
